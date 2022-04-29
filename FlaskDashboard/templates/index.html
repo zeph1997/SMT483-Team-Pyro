@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Dashboard - Pyro View</title>
+        <link rel="icon" type="image/x-icon" href="{{url_for('static', filename='img/favicon-32x32.png')}}">
+
+        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+        <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin=""/>
+
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/vue@next"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+        <style>
+            #map { height: 600px; }
+
+        </style>
+    </head>
+    <body class="sb-nav-fixed">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+            <!-- Navbar Brand-->
+            <a class="navbar-brand ps-3" href="{{url_for('root')}}"><img style="height:45%;width:45%" src="{{url_for('static', filename='img/team_pyro.png')}}"></a>
+            <!-- Sidebar Toggle-->
+            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+            <!-- Navbar Search-->
+            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+            </form>
+            <!-- Navbar-->
+            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item"  href="{{url_for('profile_setting')}}">Camera Management</a></li>
+                        <li><a class="dropdown-item"  href="{{url_for('camera_logs')}}">Camera Logs</a></li>
+                        <li><a class="dropdown-item"  href="{{url_for('user_guide')}}">User Guide</a></li>
+						<li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" href="{{url_for('logout')}}">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                            <div class="sb-sidenav-menu-heading">Core</div>
+                            <a class="nav-link" href="{{url_for('root')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Dashboard
+                            </a>
+                           
+                            <div class="sb-sidenav-menu-heading">Adminstrative</div>
+                            <a class="nav-link" href="{{url_for('profile_setting')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                Camera Management
+                            </a>
+                            <a class="nav-link" href="{{url_for('camera_logs')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-history"></i></div>
+                                Camera Logs
+                            </a>
+                            <div class="sb-sidenav-menu-heading">Support</div>
+							<a class="nav-link mt-10 " href="{{url_for('user_guide')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-question-circle"></i></div>
+                                User Guide
+                            </a>
+                        </div>
+                    </div>
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Logged in as:</div>
+                        {{campus_name}}
+                    </div>
+                </nav>
+            </div>
+            <div id="layoutSidenav_content">
+                <main>
+                    <div class="container-fluid px-4">
+                        <h1 class="mt-4">Live Dashboard</h1>
+                        <div class="alert alert-danger" id="red-alert" role="alert">
+                        Fire warnings located!
+                        </div>
+                        <div class="alert alert-warning" id= "orange-alert" role="alert">
+                            Potential Fire warnings located!
+                        </div>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <i class="fas fa-chart-bar me-1"></i>
+                                        Map Dashboard
+                                    </div>
+                                    <div id="map">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class= "col-md-2">
+                                <div class="col">
+                                    <div class="card bg-danger text-white mb-4">
+                                        <div class="card-body">Fire Warnings
+                                        <h1 class="card-title" id="redCount"></h1>
+                                        </div>    
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card bg-warning text-white mb-4">
+                                        <div class="card-body">Possible Fires
+                                        <h1 class="card-title" id="orangeCount"></h1>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card bg-success text-white mb-4">
+                                        <div class="card-body">Normal
+                                            <h1 class="card-title" id="greenCount"></h1>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="card bg-primary text-white mb-4">
+                                        <div class="card-body">Fire Dispatched
+                                            <h1 class="card-title" id="blueCount"></h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                           
+                           
+                        </div>
+                    </div>
+                </main>
+
+            </div>
+        </div> 
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+        <script>
+
+        //Button 
+        var dispatch_btn= '<button type="button" class="btn btn-sm btn-primary">Dispatch</button>'
+        var mute_btn= '<button type="button" class="btn btn-sm btn-secondary">Mute</button>'
+
+        //Creating Map Layers 
+        var satelite= L.tileLayer('https://api.mapbox.com/styles/v1/pblyn/ckyto6c7t000i14o46qp94a7p/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoicGJseW4iLCJhIjoiY2t0cmRwcjNqMGphZjJvcWltbGNxanNtdyJ9.n3Ukzd_mzJRuZUmHjr_vpA',{
+            id: 'mapbox/',
+            accessToken: 'pk.eyJ1IjoicGJseW4iLCJhIjoiY2t0cmRwcjNqMGphZjJvcWltbGNxanNtdyJ9.n3Ukzd_mzJRuZUmHjr_vpA'
+        })
+
+        var googleStreets= L.tileLayer('https://api.mapbox.com/styles/v1/pblyn/ckytoqhyp000c14pfs871vf5h/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoicGJseW4iLCJhIjoiY2t0cmRwcjNqMGphZjJvcWltbGNxanNtdyJ9.n3Ukzd_mzJRuZUmHjr_vpA',{
+            id: 'mapbox/',
+            accessToken: 'pk.eyJ1IjoicGJseW4iLCJhIjoiY2t0cmRwcjNqMGphZjJvcWltbGNxanNtdyJ9.n3Ukzd_mzJRuZUmHjr_vpA'
+        })
+
+        var grayscale= L.tileLayer('https://api.maptiler.com/maps/toner/{z}/{x}/{y}.png?key=ZXDj7dd61PS9sxJFlOol', {
+            attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+            maxZoom: 18,
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1IjoicGJseW4iLCJhIjoiY2t0cmRwcjNqMGphZjJvcWltbGNxanNtdyJ9.n3Ukzd_mzJRuZUmHjr_vpA'
+        })
+
+        var SIcon = L.Icon.extend({
+            options: {
+                iconSize:     [20, 20],
+                shadowSize:   [50, 64],
+                iconAnchor:   [10, 20],
+                shadowAnchor: [4, 62],
+                popupAnchor:  [0, -30]
+            }
+        });
+        var BIcon = L.Icon.extend({
+            options: {
+                iconSize:     [40, 40],
+                shadowSize:   [15, 40],
+                iconAnchor:   [20, 40],
+                shadowAnchor: [4, 40],
+                popupAnchor:  [0, -45]
+            }
+        });
+
+        var greenIcon = new BIcon({iconUrl: "{{url_for('static', filename='img/green_marker.png')}}"});
+        var redIcon = new BIcon({iconUrl: "{{url_for('static', filename='img/red_marker.png')}}"});
+        var orangeIcon = new BIcon({iconUrl: "{{url_for('static', filename='img/orange_marker.png')}}"});
+        var blueIcon = new BIcon({iconUrl: "{{url_for('static', filename='img/blue_marker.png')}}"});
+        var greyIcon = new BIcon({iconUrl: "{{url_for('static', filename='img/grey_marker.png')}}"});
+        var greyStn = new BIcon({iconUrl: "{{url_for('static', filename='img/grey_firestation.png')}}"});
+        var blueStn = new BIcon({iconUrl: "{{url_for('static', filename='img/blue_firestation.png')}}"});
+
+        var map = L.map('map' , {
+            layers: [satelite, googleStreets, grayscale]
+        }).setView([1.3521, 103.8198], 11);
+        
+        var soc_locations_kv = {}
+        var soc_firedepts_kv= {}
+
+        var layer
+        var redOverlay
+        var orangeOverlay
+        var greenOverlay
+        var blueOverlay
+        var greyOverlay
+        var fireStationsOverlay
+
+        var socket = io();
+        socket.on('connect', function() {
+            socket.emit('connected');
+        });
+
+        function mute(loc){
+            console.log("mute");
+            socket.emit('mute',[loc]);
+        }
+
+        function unmute(loc){
+            console.log("unmute");
+            socket.emit('unmute',[loc]);
+        }
+
+        function get_nearest_firedept(lat,lng){
+            fire_depts = soc_firedepts_kv
+            nearest_fire_dept= ""
+            minDist = 999999999999
+            for (const [i, j] of Object.entries(fire_depts)) {   
+                if(j["IsDispatched"]==0){  //find next available fire stn, assuming 1 fire stn only has 1 dispatch team 
+                    if (((lat - parseFloat(j["long"])) ** 2) + ((lng - parseFloat(j["lat"])) ** 2) < minDist){
+                        minDist = ((lat - parseFloat(j["long"])) ** 2) + ((lng - parseFloat(j["lat"])) ** 2)
+                        nearest_fire_dept= i}
+                    }
+                }
+            return nearest_fire_dept
+        }
+
+        function dispatch(data){
+            nearest_fire_dept= get_nearest_firedept(soc_locations_kv[data]["lat"],soc_locations_kv[data]["long"])
+            socket.emit('dispatched', [data,nearest_fire_dept])
+            }
+
+        function mute_and_clear_dispatch(data){
+            clear_dispatch(data)
+            data = data.split(",")
+            console.log(data)
+            mute(data[0])
+            socket.emit('false_alarm_late',data)
+
+        }
+
+        function clear_dispatch(data){
+            data= data.split(",")
+            socket.emit('clear_dispatch', data)
+        }
+                
+        function update_map(locations_kv, firedepts_kv){
+            var blueOverlayList= []; 
+            var redOverlayList= []; 
+            var orangeOverlayList= []; 
+            var greenOverlayList= []; 
+            var greyOverlayList= [];
+            var fireStationsOverlayList= []; 
+
+            var redCounter= 0
+            var greenCounter= 0
+            var orangeCounter= 0
+            var blueCounter=0
+
+            if (layer != undefined) {
+                map.removeLayer(redOverlay)
+                map.removeLayer(orangeOverlay)
+                map.removeLayer(greenOverlay)
+                map.removeLayer(blueOverlay)
+                map.removeLayer(greenOverlay)
+                map.removeLayer(greyOverlay)
+                map.removeLayer(fireStationsOverlay)
+                layer.remove(map)
+
+            } 
+
+            if(isSCDF){ // if SCDF, show all locations and fire departments
+                for (var dept in firedepts_kv){
+                    if (firedepts_kv[dept]["IsDispatched"]!=0){
+                        fireStationsOverlayList.push(L.marker([firedepts_kv[dept].long, firedepts_kv[dept].lat], {icon: blueStn}).bindPopup(firedepts_kv[dept].Description + "<br>" 
+                        + "<b>Dispatched to " + locations_kv[firedepts_kv[dept].IsDispatched].LocationName+"</b>"
+                        ));
+                    }else{
+                        fireStationsOverlayList.push(L.marker([firedepts_kv[dept].long, firedepts_kv[dept].lat], {icon: greyStn}).bindPopup(firedepts_kv[dept].Description));
+                    }}
+                
+                for (var loc in locations_kv){  
+                    if(locations_kv[loc]["DispatchBy"]!= 0){
+                        blueCounter+=1
+                        blueOverlayList.push(L.marker([locations_kv[loc].lat, locations_kv[loc].long], {icon: blueIcon}).bindPopup(firedepts_kv[locations_kv[loc].DispatchBy].Name + " dispatched to " + locations_kv[loc].LocationName + "<br>" +
+                        '<div class="container"><div class="text-center"><button type="button" class="btn btn-sm btn-secondary" onclick= "clear_dispatch(\'' + [loc,locations_kv[loc].DispatchBy] +'\')">Clear Dispatch</button></div></div>'
+                        ));
+                    }else if(locations_kv[loc]["Mute"]!=0){
+                        greyOverlayList.push(L.marker([locations_kv[loc].lat, locations_kv[loc].long], {icon: greyIcon}).bindPopup("Muted at " + locations_kv[loc].LocationName + "<br>" +
+                        '<div class="container"><div class="text-center"><button type="button" class="btn btn-sm btn-secondary" onclick= "unmute(\'' + loc +'\')">Unmute</button></div></div>'
+                        ));
+                    }
+                    else if (locations_kv[loc]["ThermalFire"] == 1 && locations_kv[loc]["CameraFire"] == 1){
+                        redCounter += 1
+                        redOverlayList.push(L.marker([locations_kv[loc].lat, locations_kv[loc].long], {icon: redIcon}).bindPopup("Fire at " + locations_kv[loc].LocationName + "<br>" +
+                        '<div class="container"><div class="text-center"><button type="button" class="btn btn-sm btn-primary" onclick= "dispatch(\'' + loc +'\')">Dispatch</button><button type="button" class="btn btn-sm btn-secondary" onclick= "mute(\'' + loc +'\')")>Mute</button></div></div>'
+                        ));
+                    } else if (locations_kv[loc]["ThermalFire"] == 1 || locations_kv[loc]["CameraFire"] == 1){
+                        orangeCounter += 1;
+                        orangeOverlayList.push(L.marker([locations_kv[loc].lat, locations_kv[loc].long], {icon: orangeIcon}).bindPopup("Possible Fire at " + locations_kv[loc].LocationName + "<br>" +
+                        '<div class="container"><div class="text-center"><button type="button" class="btn btn-sm btn-primary" onclick= "dispatch(\'' + loc +'\')">Dispatch</button><button type="button" class="btn btn-sm btn-secondary" onclick= "mute(\'' + loc +'\')")>Mute</button></div></div>'
+                        ));
+                    } else {
+                        greenCounter += 1
+                        greenOverlayList.push(L.marker([locations_kv[loc].lat, locations_kv[loc].long], {icon: greenIcon}).bindPopup("No fire at " + locations_kv[loc].LocationName ));
+                    }
+                }       
+            }
+            else{ //if not SCDF, show the relevant locations
+                for (var dept in firedepts_kv){
+                    if (userLocations.includes(firedepts_kv[dept]["IsDispatched"])){
+                        fireStationsOverlayList.push(L.marker([firedepts_kv[dept].long, firedepts_kv[dept].lat], {icon: blueStn}).bindPopup(firedepts_kv[dept].Description));
+                    }
+                }
+
+                for (var loc of userLocations){
+                    if(locations_kv[loc]["DispatchBy"] != 0){
+                        blueCounter+=1
+                        blueOverlayList.push(L.marker([locations_kv[loc].lat, locations_kv[loc].long], {icon: blueIcon}).bindPopup("<div class='container'><div class='row align-self-end spacing-for-edit-row'><a class='my-leaflet-popup-edit-button' href='profile-setting'><img class='my-edit-btn' src='{{url_for('static', filename='img/editing.png')}}'></a></div><div class='row'>" + 
+                        firedepts_kv[locations_kv[loc].DispatchBy].Name + " dispatched to " + locations_kv[loc].LocationName + "<br>" +
+                        '<div class = "container"><div class="text-center"><button type="button" class="btn btn-sm btn-secondary" onclick= "mute_and_clear_dispatch(\'' + [loc,locations_kv[loc].DispatchBy] +'\')">Mute and Inform False Alarm</button></div></div>'
+                        ));
+                    }
+                    else if(locations_kv[loc]["Mute"]!=0){
+                        greyOverlayList.push(L.marker([locations_kv[loc].lat, locations_kv[loc].long], {icon: greyIcon}).bindPopup("<div class='container'><div class='row align-self-end spacing-for-edit-row'><a class='my-leaflet-popup-edit-button' href='profile-setting'><img class='my-edit-btn' src='{{url_for('static', filename='img/editing.png')}}'></a></div><div class='row'>" + 
+                        "Muted at " + locations_kv[loc].LocationName + "<br>" +
+                        '<div class="container"><div class="text-center"><button type="button" class="btn btn-sm btn-secondary" onclick= "unmute(\'' + loc +'\')">Unmute</button></div></div>' +
+                        '</div></div>',
+                        {closeOnClick:true}));
+                    }
+                    else if (locations_kv[loc]["ThermalFire"] == 1 && locations_kv[loc]["CameraFire"] == 1){
+                        redCounter += 1
+                        redOverlayList.push(L.marker([locations_kv[loc].lat, locations_kv[loc].long], {icon: redIcon}).bindPopup("<div class='container'><div class='row align-self-end spacing-for-edit-row'><a class='my-leaflet-popup-edit-button' href='profile-setting'><img class='my-edit-btn' src='{{url_for('static', filename='img/editing.png')}}'></a></div><div class='row'>" + 
+                        "Fire at " + locations_kv[loc].LocationName + "<br>" +
+                        '<div class="d-flex justify-content-center"><button type="button" class="btn btn-sm btn-secondary" onclick= "mute(\'' + loc +'\')">Mute</button></div>' +
+                        '</div></div>',
+                        {closeOnClick:true}));
+                    } else if (locations_kv[loc]["ThermalFire"] == 1 || locations_kv[loc]["CameraFire"] == 1){
+                        orangeCounter += 1;
+                        orangeOverlayList.push(L.marker([locations_kv[loc].lat, locations_kv[loc].long], {icon: orangeIcon}).bindPopup("<div class='container'><div class='row align-self-end spacing-for-edit-row'><a class='my-leaflet-popup-edit-button' href='profile-setting'><img class='my-edit-btn' src='{{url_for('static', filename='img/editing.png')}}'></a></div><div class='row'>" + 
+                        "Possible Fire at " + locations_kv[loc].LocationName + "<br>" +
+                        '<div class="container"><div class="text-center"><button type="button" class="btn btn-sm btn-secondary" onclick= "mute(\'' + loc +'\')">Mute</button></div></div>' +
+                        '</div></div>',
+                        {closeOnClick:true}));
+                    } else {
+                        greenCounter += 1
+                        greenOverlayList.push(L.marker([locations_kv[loc].lat, locations_kv[loc].long], {icon: greenIcon}).bindPopup("<div class='container'><div class='row align-self-end spacing-for-edit-row'><a class='my-leaflet-popup-edit-button' href='profile-setting'><img class='my-edit-btn' src='{{url_for('static', filename='img/editing.png')}}'></a></div><div class='row'>" + "No fire at " + locations_kv[loc].LocationName + "<br>" +
+                        '</div></div>',
+                        {closeOnClick:true}
+                        ));
+
+                    }
+                }
+            }
+
+            document.getElementById("greenCount").innerHTML= greenCounter
+            document.getElementById("redCount").innerHTML= redCounter
+            document.getElementById("orangeCount").innerHTML= orangeCounter
+            document.getElementById("blueCount").innerHTML= blueCounter
+
+            function playSound(url) {
+                const audio = new Audio(url);
+                audio.play();
+            }
+
+            if (redCounter>0){
+                document.getElementById('red-alert').style.display= "block"
+                // playSound()
+            }else{
+                document.getElementById('red-alert').style.display= "none"
+            }
+
+            if (orangeCounter>0){
+                document.getElementById('orange-alert').style.display= "block"
+            }else{
+                document.getElementById('orange-alert').style.display= "none"
+            }
+         
+            fireStationsOverlay= L.layerGroup(fireStationsOverlayList)
+            redOverlay=  L.layerGroup(redOverlayList);
+            orangeOverlay= L.layerGroup(orangeOverlayList);
+            greenOverlay=  L.layerGroup(greenOverlayList);
+            blueOverlay= L.layerGroup(blueOverlayList);
+            greyOverlay= L.layerGroup(greyOverlayList);
+
+            redOverlay.addTo(map)
+            orangeOverlay.addTo(map)
+            greenOverlay.addTo(map)
+            blueOverlay.addTo(map)
+            fireStationsOverlay.addTo(map)
+            greyOverlay.addTo(map)
+
+            var overlayMaps = {
+                "Super High Fire Risk": redOverlay,
+                "High Fire Risk": orangeOverlay,
+                "Normal": greenOverlay,
+                "Dispatched Fire": blueOverlay,
+                "Muted Fire Alerts": greyOverlay,
+                "Fire Stations": fireStationsOverlay,
+            };
+
+            var baseMaps = {
+                "Grayscale": grayscale,
+                "Streets": googleStreets,
+                "Satelite": satelite
+            };        
+            
+            var overlayMaps = {
+                "<span style='color: red'>Fire Warnings</span>": redOverlay,
+                "<span style='color: orange'>Possible Fires</span>": orangeOverlay,
+                "<span style='color: green'>Normal</span>": greenOverlay,
+                "<span style='color: blue'>Dispatched Fire</span>": blueOverlay,
+                "<span>Muted Fire Alerts</span>": greyOverlay,
+                "<span>Fire Stations</span>": fireStationsOverlay,
+            };
+            
+            layer= L.control.layers(baseMaps, overlayMaps)
+            layer.addTo(map);
+        }
+
+        socket.on('original_data',function(data) {
+            soc_locations_kv = data[0];
+            soc_firedepts_kv = data[1];
+            update_map(soc_locations_kv, soc_firedepts_kv);
+        });
+
+        socket.on('update',function(data) {
+            if (soc_locations_kv.hasOwnProperty(data.Location) && soc_locations_kv[data.Location].hasOwnProperty(data.Camera)) {
+                if (data.Camera == "CameraSweep" && data.Value == 1) {
+                    alert("False alarm detected at " + data.Location +"! Pin has been automatically muted for 1 hour!")
+                    socket.emit('camera_sweep_heard',[data.Location]);
+                } else {
+                    soc_locations_kv[data.Location][data.Camera] = data.Value;
+                }
+            } 
+            else {
+                console.log("No such location found")
+            }
+            update_map(soc_locations_kv, soc_firedepts_kv);
+        });
+
+        socket.on('unmuted_data',function(data) {
+            if (soc_locations_kv.hasOwnProperty(data.Location)) {
+                soc_locations_kv[data.Location] = data.data;
+            }
+            update_map(soc_locations_kv,soc_firedepts_kv);
+        })
+        
+        socket.on('notify_false_alarm_late',function(data) {
+            if (window.isSCDF) {
+                alert("Facility Managers at " + data.Location + " (" + data.LocationName +") has updated that the alarm is a False Alarm. Location has been auto muted and cleared dispatch for location!")
+            }
+        })
+</script> 
+<script>
+    var isSCDF;
+    axios.get('https://team-pyro-dashboard.herokuapp.com/isAdmin')
+    .then(response => {
+        isSCDF= response.data
+    });
+
+    axios.get('https://team-pyro-dashboard.herokuapp.com/getLocations')
+    .then(response => {
+        userLocations= response.data
+        userLocations= userLocations.split(",")
+    });
+</script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="{{url_for('static', filename='js/scripts.js')}}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+    </body>
+</html>

@@ -1,0 +1,642 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>User Guide - Pyro View</title>
+		<link rel="icon" type="image/x-icon" href="{{url_for('static', filename='img/favicon-32x32.png')}}">
+
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+        <link href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" rel="stylesheet" />
+        <link href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css" rel="stylesheet" />
+        <link href="https://cdn.datatables.net/select/1.3.4/css/select.dataTables.min.css" rel="stylesheet" />
+        <link href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.bootstrap5.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/4.2.0/css/ionicons.min.css" integrity="sha256-F3Xeb7IIFr1QsWD113kV2JXaEbjhsfpgrKkwZFGIA4E=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="" integrity="sha256-F3Xeb7IIFr1QsWD113kV2JXaEbjhsfpgrKkwZFGIA4E=" crossorigin="anonymous" />
+
+        <link rel="stylesheet" href="{{url_for('static', filename='faq.css')}}">
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
+    </head>
+    <body class="sb-nav-fixed">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+            <!-- Navbar Brand-->
+            <a class="navbar-brand ps-3" href="{{url_for('root')}}"><img style="height:45%;width:45%" src="{{url_for('static', filename='img/team_pyro.png')}}"></a>
+            <!-- Sidebar Toggle-->
+            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+            <!-- Navbar Search-->
+            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+                <!-- <div class="input-group">
+                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+                </div> -->
+            </form>
+            <!-- Navbar-->
+            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item"  href="{{url_for('profile_setting')}}">Profile Management</a></li>
+						<li><a class="dropdown-item"  href="{{url_for('camera_logs')}}">Camera Logs</a></li>
+						<li><a class="dropdown-item"  href="{{url_for('user_guide')}}">User Guide</a></li>
+						<li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" href="{{url_for('logout')}}">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                            <div class="sb-sidenav-menu-heading">Core</div>
+                            <a class="nav-link" href="{{url_for('root')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Dashboard
+                            </a>
+                            <div class="sb-sidenav-menu-heading">Adminstrative</div>
+                            <a class="nav-link" href="{{url_for('profile_setting')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                Camera Management
+                            </a>
+							<a class="nav-link" href="{{url_for('camera_logs')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-history"></i></div>
+                                Camera Logs
+                            </a>
+
+							<div class="sb-sidenav-menu-heading">Support</div>
+							<a class="nav-link mt-10 " href="{{url_for('user_guide')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-question-circle"></i></div>
+                                User Guide
+                            </a>
+                        </div>
+                    </div>
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Logged in as:</div>
+                        {{campus_name}}
+                    </div>
+                </nav>
+            </div>
+            <div id="layoutSidenav_content">
+<main>
+  
+	<div class="docs-page">    
+		<div class= "header fixed-top">
+
+		</div>
+
+    
+    <div class="docs-wrapper">
+	    <div id="docs-sidebar" class="docs-sidebar">
+
+		    <nav id="docs-nav" class="docs-nav navbar">
+			    <ul class="section-items list-unstyled nav flex-column pb-3">
+				    <li class="nav-item section-title"><a class="nav-link scrollto active" href="#introduction"><span class="theme-icon-holder me-2"><i class="fas fa-map-signs"></i></span>Introduction</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-1-1">Getting Started</a></li>
+
+				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#dashboard-guide"><span class="theme-icon-holder me-2"><i class="fas fa-tachometer-alt"></i></span>Dashboard Guide</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-1">Map Dashboard</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-2">Summary Cards</a></li>
+					<li class="nav-item"><a class="nav-link scrollto" href="#item-2-3">Alert Banners</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-4">Visualisation Tips</a></li>
+
+				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#camera-management"><span class="theme-icon-holder me-2"><i class="fas fa-table"></i></span>Camera Management Guide</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-3-1">Viewing Records</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-3-2">Editing Records</a></li>
+
+
+				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#camera-log"><span class="theme-icon-holder me-2"><i class="fas fa-history"></i></span>Camera Logs</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-4-1">Viewing Logs</a></li>
+
+					<li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#faq"><span class="theme-icon-holder me-2"><i class="fas fa-lightbulb"></i></span>FAQ</a></li>
+			    </ul>
+
+		    </nav><!--//docs-nav-->
+	    </div><!--//docs-sidebar-->
+	    <div class="docs-content" >
+		    <div class="container">
+			    <article class="docs-article"  id="introduction">
+				    <header class="docs-header">
+					    <h1 class="docs-heading">Introduction <span class="docs-time">Last updated: 2022-04-10</span></h1>
+					    <section class="docs-intro">
+						    <p>Welcome to Pyro Fire Alarm Management System. </p>
+							<p>This page serves as a guide to the features and functions available in this system.</p>
+							<h5>There are 3 main pages in the system: </h5>
+							<div class="table-responsive my-4">
+								<table class="table table-bordered">
+									<thead>
+										<tr>
+											<th scope="col">Page</th>
+											<th scope="col">Description</th>
+										</tr>	
+									</thead>
+
+									<tbody>
+										<tr>
+											<th class="theme-bg-light"><a class="theme-link" href="#dashboard-guide">Dashboard</a></th>
+											<td>Map overview of your facility's Fire Status </td>
+										</tr>
+										<tr>
+											  <th class="theme-bg-light"><a class="theme-link" href="#camera-management">Camera Management</a></th>
+											  <td>Summary of your facility's Fire Camera details </td>
+										</tr>
+										<tr>
+											<th class="theme-bg-light"><a class="theme-link" href="#camera-log">Camera Logs</a></th>
+											<td>Historical logging records of your facility's Fire Camera details </td>
+										</tr>
+									</tbody>
+								</table>
+								<video autoplay loop muted  width="700" height="450" >
+									<source src="{{url_for('static', filename='img/user-guide/navbar-guide.mov')}}" >
+								  Your browser does not support the video tag.
+								  </video>
+
+								  <div class="callout-block callout-block-info">
+									<div class="content">
+										<h4 class="callout-title">
+											<span class="callout-icon-holder me-1">
+												<i class="fas fa-info-circle"></i>
+											</span><!--//icon-holder-->
+											Note
+										</h4>
+										<p>Navigate to any of these pages through the side menu bar. Collapse side-menu bar for fuller view.</p>
+									</div><!--//content-->
+								</div><!--//callout-block-->
+								  
+							</div><!--//table-responsive-->
+
+						</section><!--//docs-intro-->
+					
+				
+				    <section class="docs-section" id="item-1-1">
+						<h2 class="section-heading">Getting Started</h2>
+						<p>If you have just registered your Facility, you will need to configure your cameras to get started. </p>
+						<h5>Steps to configure the newly registered camera:</h5>
+						<ol>
+						    <li>Navigate to <strong class="me-1">"Camera Logs"</strong> from the menu bar. </li>
+						    <li>Click on the green <strong class="me-1">"Edit Button"</strong> above the top left table.</li>
+							<img width="700" height="450"  src="{{url_for('static', filename='img/user-guide/getting-started-1.png')}}">
+						    <li>Pick the relevant cameras to edit via the dropdown list <strong class="me-1">"Camera ID"</strong>.</li>
+							<img width="700" height="450" src="{{url_for('static', filename='img/user-guide/getting-started-2.png')}}">
+							<li>Fill the correct Location Name, Location Details, Latitude, and Longitude for the corresponding camera.</li>
+						    <li>Click <strong class="me-1">"Edit Camera Information"</strong> to submit the changes.</li>
+							<a class="btn btn-info">Edit Camera Information</a>
+							<li>You are ready to go!</li>
+						</ol>       
+					</section><!--//section-->			
+			    </article>
+			    
+			    <article class="docs-article" id="dashboard-guide">
+				    <header class="docs-header">
+					    <h1 class="docs-heading">Dashboard Guide</h1>
+					    <section class="docs-intro">
+						    <p>The "Dashboard" page displays the live status of your Facility's fire cameras' status.</p>
+							<img width="680" height="350" src="{{url_for('static', filename='img/user-guide/dashboard.png')}}">
+							<h5 class="mt-5">The Live Dashboard has 3 main parts:</h5>
+						<ol>
+							<li>Map Dashboard (bottom left)</li>
+							<li>Summary Cards (bottom right)</li>
+							<li>Alert Banners (top)</li>							
+						</ol>
+						</section><!--//docs-intro-->
+				    </header>
+				     <section class="docs-section" id="item-2-1">
+						<h2 class="section-heading">Map Dashboard</h2>
+						<p>The Map Dashboard displays your cameras' status through markers mapped to their respective locations.</p>
+						<img  width="600" height="300" src="{{url_for('static', filename='img/user-guide/map-dashboard.png')}}">
+						<h5 class="mt-5">Possible Markers:</h5>
+						<div class="table-responsive my-4">
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th style="width:10%" scope="col">Marker</th>
+										<th scope="col">Status Description</th>
+									</tr>	
+								</thead>
+
+								<tbody>
+									<tr>
+										<td>
+											<img class= "mx-auto d-block" width="50" height="50"  src="{{url_for('static', filename='img/red_marker.png')}}">
+											<td>
+												<b>Fire Located</b><br>Fire has been detected from both Thermal Camera and Camera Vision in this camera location
+										</td>
+									</tr>
+									<tr>
+											<td >
+												<img  class= "mx-auto d-block" width="50" height="50" src="{{url_for('static', filename='img/orange_marker.png')}}">
+
+										  <td>
+											<b>Potential Fire Located</b> <br>Fire has been detected from either the Thermal Camera, or the Camera Vision in this camera location
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<img class= "mx-auto d-block"  width="50" height="50" src="{{url_for('static', filename='img/green_marker.png')}}">
+											</td>	
+										<td>
+											<b>No Fire</b> <br>No fire is detected from both the Thermal Camera and the Camera Vision in this camera location
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<img  class= "mx-auto d-block" width="50" height="50"  src="{{url_for('static', filename='img/grey_marker.png')}}">
+
+											</td>	
+										<td><b>False Alarm</b> <br>A fire was detected from one/both thermal and vision cameras, but was muted.</td>
+									</tr>
+									<tr>
+										<td>
+											<img class= "mx-auto d-block" width="50" height="50"  src="{{url_for('static', filename='img/blue_marker.png')}}">
+
+											</td>	
+										<td><b>Fire Department Dispatched</b> <br>SCDF has been dispatched to this camera location as a potential fire was detected. 
+										
+										
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<img class= "mx-auto d-block" width="50" height="50" src="{{url_for('static', filename='img/blue_firestation.png')}}">
+											</td>	
+										<td><b>Firestation dispatched to the detected fire site.</b>
+									
+										</td>
+									</tr>
+								</tbody>
+							</table>
+
+						<h5 class="mt-5 mb-0">Marker Functions:</h5>
+						<p class="mb-5">You may trigger actions depending on the marker type </p>
+						<div class="table-responsive my-4">
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th style="width:20%" scope="col">Marker(s)</th>
+										<th scope="col">Feature/Function</th>
+									</tr>	
+								</thead>
+
+								<tbody>
+									<tr>
+										<td>
+											<img class= "mx-auto" width="50" height="50"  src="{{url_for('static', filename='img/red_marker.png')}}">
+											<img  class= "mx-auto" width="50" height="50" src="{{url_for('static', filename='img/orange_marker.png')}}">
+											<img class= "mx-auto"  width="50" height="50" src="{{url_for('static', filename='img/green_marker.png')}}">
+											<img  class= "mx-auto" width="50" height="50"  src="{{url_for('static', filename='img/grey_marker.png')}}">
+											<img class= "mx-auto " width="50" height="50"  src="{{url_for('static', filename='img/blue_marker.png')}}">
+											</td>	
+										<td>
+											<b>Edit Camera Location</b> <br>Edit a camera location by clicking the marker and clicking the edit button on the top right<br>
+											<video autoplay loop muted  width="500" height="350" >
+												<source src="{{url_for('static', filename='img/user-guide/edit-camera.mov')}}" >
+											Your browser does not support the video tag.
+											</video>
+											
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<img class= "mx-auto" width="50" height="50"  src="{{url_for('static', filename='img/red_marker.png')}}">
+											<img  class= "mx-auto" width="50" height="50" src="{{url_for('static', filename='img/orange_marker.png')}}">
+
+											<td>
+												<b>Mute Fire</b><br>If you are definite the detected fire was a <b>false alarm</b>, you may mute the marker by clicking the marker, and clicking "mute" <br>
+												<video autoplay loop muted  width="300" height="200" >
+													<source src="{{url_for('static', filename='img/user-guide/mute.mov')}}" >
+												Your browser does not support the video tag.
+												</video>
+												
+										</td>
+									</tr>
+									
+									
+									<tr>
+										<td>
+											<img  class= "mx-auto d-block" width="50" height="50"  src="{{url_for('static', filename='img/grey_marker.png')}}">
+
+											</td>	
+										<td><b>Ummute</b> <br>Unmute if you accidentally muted  an actual fire<br>
+											<video autoplay loop muted  width="270" height="200" >
+												<source src="{{url_for('static', filename='img/user-guide/unmute.mov')}}" >
+											Your browser does not support the video tag.
+											</video>
+										
+										</td> 
+									</tr>
+									
+									<tr>
+										<td>
+											<img class= "mx-auto d-block" width="50" height="50" src="{{url_for('static', filename='img/blue_firestation.png')}}">
+											</td>	
+										<td><b>Firestation dispatched to the detected fire site.</b>
+											<br>Click on the marker to get more details on the dispatched team
+											<br>
+											<video autoplay loop muted  width="270" height="270" >
+												<source src="{{url_for('static', filename='img/user-guide/fire-station.mov')}}" >
+											Your browser does not support the video tag.
+											</video>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+
+							<div class="callout-block callout-block-success">
+								<div class="content">
+									<h4 class="callout-title">
+										<span class="callout-icon-holder me-1">
+											<i class="fas fa-thumbs-up"></i>
+										</span><!--//icon-holder-->
+										Tip
+									</h4>
+									<p>Click on the marker to read more details and trigger actions!</p>
+								</div><!--//content-->
+							</div><!--//callout-block-->
+
+					
+
+					</section><!--//section-->
+					
+					<section class="docs-section" id="item-2-2">
+						<h2 class="section-heading">Summary Cards</h2>
+						<p>The summary cards gives you a quick overview on the fire statusesof your Facility. The count of each Camera status is summed up.</p>
+						<img  width="130" height="350"  src="{{url_for('static', filename='img/user-guide/summary-cards.png')}}">
+
+					</section><!--//section-->
+					
+					<section class="docs-section" id="item-2-3">
+						<h2 class="section-heading">Alert Banners</h2>
+						<p>Alert Banners are triggered banners to warn you of potential fires detected. If no fires are detected, the banners will not be visible.</p>
+						<img  width="900" height="100" src="{{url_for('static', filename='img/user-guide/alert-banners.png')}}">
+						<h5 class="mt-5">Possible Alert Banners:</h5>
+						<div class="table-responsive my-4">
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th style="width:30%" scope="col">Scenario</th>
+										<th scope="col">Alert Banner</th>
+									</tr>	
+								</thead>
+
+								<tbody>
+									<tr>
+										<td ><b>&ge;1 markers are <span style="color: #ff8800">orange</span> </b> 
+						
+											<br> (i.e potential fire warning, detected from either thermal/vision cameras)</td>
+										<td>
+											<div class="alert alert-danger" role="alert">
+												Potential Fire warnings located!
+											</div>
+
+										</td>
+									</tr>
+									<tr>
+										  <td><b>&ge;1 markers are   <span style="color: #ff0000">red</span></b>
+											<br> (i.e fire has been detected from both thermal and vision cameras)</td>
+										  <td>
+											<div class="alert alert-warning" role="alert">
+												Fire warnings located!
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td><b>Markers are all 
+											<span style="color: #0e730a">green</span> /
+											<span style="color: #6e6e6e">grey</span>
+										</b>
+										<br> 
+											 (i.e no fire/false alarms detected from both thermal and vision cameras)</td>
+										<td>None</td>
+									</tr>
+								
+								</tbody>
+							</table>
+					</section><!--//section-->
+
+					<section class="docs-section" id="item-2-4">
+						<h2 class="section-heading">Visualisation Tips</h2>
+						<p>You may follow these tips to avoid over-cluttering the map dashboard, and focus on what you are most interested in </p>
+						<h5 class="mt-5">Tip 1: Change Map Layer</h5>
+						<p>The view of map layers can be changed (Satellite/ Street/ Grey) accordingly to suit your needs </p>
+						<video autoplay loop muted  width="800" height="400" >
+							<source src="{{url_for('static', filename='img/user-guide/map-layer.mov')}}" >
+						Your browser does not support the video tag.
+						</video>
+
+						<h5 class="mt-5">Tip 2: Filter Markers</h5>
+						<p>Various markers can be filtered accordingly to your focus</p>
+
+						<video autoplay loop muted  width="800" height="400" >
+							<source src="{{url_for('static', filename='img/user-guide/marker-layer.mov')}}" >
+						Your browser does not support the video tag.
+						</video>
+						<h5 class="mt-5">Tip 3: Zooming Layers</h5>
+						<p>You may zoom in/out the Map Dashboard using the +/- button at the top left, or by pinching your mouse pad</p>
+
+						<video autoplay loop muted  width="800" height="400" >
+							<source src="{{url_for('static', filename='img/user-guide/zoom.mov')}}" >
+						Your browser does not support the video tag.
+						</video>
+					</section><!--//section-->
+			    </article><!--//docs-article-->
+			    
+			    
+			    <article class="docs-article" id="#camera-management">
+				    <header class="docs-header">
+					    <h1 class="docs-heading">Camera Management Guide</h1>
+					    <section class="docs-intro">
+						    <p>The "Camera Management" page keeps all your existing Fire camera records. View and edit your records here.</p>
+							<img width="680" height="350" src="{{url_for('static', filename='img/user-guide/camera-management.png')}}">
+							<div class="callout-block callout-block-warning">
+								<div class="content">
+									<h4 class="callout-title">
+										<span class="callout-icon-holder me-1">
+											<i class="fas fa-bullhorn"></i>
+										</span><!--//icon-holder-->
+										Important
+									</h4>
+									<p>Please ensure all records are correct and up-to-date to prevent any consequences.</p>
+								</div><!--//content-->
+							</div><!--//callout-block-->
+						</section><!--//docs-intro-->
+				    </header>
+				     <section class="docs-section" id="item-3-1">
+						<h2 class="section-heading">Viewing Records</h2>
+						<p>View your camera records here to verify all information are up-to-date.</p>
+						<ul>
+						    <li>Choose the number of entries to show per page as such:</li>
+							<video autoplay loop muted  width="700" height="400" >
+								<source src="{{url_for('static', filename='img/user-guide/camera-management-show.mov')}}" >
+							  Your browser does not support the video tag.
+							  </video>
+						    <li>Sort your camera records based on any field as such:</li>
+							<video autoplay loop muted  width="700" height="400" >
+								<source src="{{url_for('static', filename='img/user-guide/camera-management-sort.mov')}}" >
+							  Your browser does not support the video tag.
+							  </video>
+						    <li>Search for a specific camera record based on any field value as such:</li>
+							<video autoplay loop muted  width="700" height="400" >
+								<source src="{{url_for('static', filename='img/user-guide/camera-management-search.mov')}}" >
+							  Your browser does not support the video tag.
+							  </video>
+						</ul>					
+					</section><!--//section-->
+					
+					<section class="docs-section" id="item-3-2">
+						<h2 class="section-heading">Editing Records</h2>
+						<p>Edit your camera records whenever you have changed its location/ want to update its description.</p>
+						<ol>
+						    <li>Navigate to <strong class="me-1">"Camera Logs"</strong> from the menu bar. </li>
+						    <li>Click on the green <strong class="me-1">"Edit Button"</strong> above the top left table.</li>
+							<img width="700" height="450"  src="{{url_for('static', filename='img/user-guide/getting-started-1.png')}}">
+						    <li>Pick the relevant cameras to edit via the dropdown list <strong class="me-1">"Camera ID"</strong>.</li>
+							<img width="700" height="450" src="{{url_for('static', filename='img/user-guide/getting-started-2.png')}}">
+							<li>Fill the correct Location Name, Location Details, Latitude, and Longitude for the corresponding camera.</li>
+						    <li>Click <strong class="me-1">"Edit Camera Information"</strong> to submit the changes.</li>
+							<a class="btn btn-info">Edit Camera Information</a>
+							<li>You are ready to go!</li>
+						</ol>	
+					</section><!--//section-->
+				
+			
+			    <article class="docs-article" id="camera-log">
+				    <header class="docs-header">
+					    <h1 class="docs-heading">Camera Logs Guide</h1>
+					    <section class="docs-intro">
+						    <p>The "Camera Logs" page keeps all the historical records of actions triggered to/from your Facilities camera. View camera logging records here.</p>
+							<img width="680" height="350" src="{{url_for('static', filename='img/user-guide/camera-log.png')}}">
+						</section><!--//docs-intro-->
+				    </header>
+				     <section class="docs-section" id="item-4-1">
+						<h2 class="section-heading">Viewing Logs</h2>
+						<p>View your historical camera logs here. </p>
+						<ul>
+						    <li>Choose the camera of your interest as such:</li>
+							<video autoplay loop muted  width="700" height="400" >
+								<source src="{{url_for('static', filename='img/user-guide/camera-log-viewcamera.mov')}}" >
+							  Your browser does not support the video tag.
+							  </video>
+						    <li>Choose the number of entries per page as such:</li>
+							<video autoplay loop muted  width="700" height="400" >
+								<source src="{{url_for('static', filename='img/user-guide/camera-log-view.mov')}}" >
+							  Your browser does not support the video tag.
+							  </video>
+						    <li>Sort records by earliest/ latest recorded time as such:</li>
+							<video autoplay loop muted  width="700" height="400" >
+								<source src="{{url_for('static', filename='img/user-guide/camera-log-sort.mov')}}" >
+							  Your browser does not support the video tag.
+							  </video>
+						</ul>					
+					</section><!--//section-->
+					
+
+			    </article><!--//docs-article-->
+			    
+
+			    
+			    
+			    <article class="docs-article" id="faq">
+				    <header class="docs-header">
+					    <h1 class="docs-heading">FAQ</h1>
+					    <section class="docs-intro">
+						    <p>Find the answers to the frequently asked questions here.</p>
+						</section><!--//docs-intro-->
+				    </header>
+
+					<div class="accordion" id="accordionPanelsStayOpenExample">
+						<div class="accordion-item">
+						  <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+							<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+							A fire has been detected! What should I do?
+							</button>
+						  </h2>
+						  <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+							<div class="accordion-body">
+							  <strong>You don't have to do anything.</strong>
+							  <br>
+							  Help will be on the way soon. When the marker turns blue, you will know that a fire team has been dispatched to the site.
+							</div>
+						  </div>
+						</div>
+						<div class="accordion-item">
+						  <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+							  A fire has been wrongly detected. What should I do?
+							</button>
+						  </h2>
+						  <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
+							<div class="accordion-body">
+							  
+								<strong>You can mute the marker to indicate it as a False alarm.</strong> 
+								<br>
+		
+								Refer to the <a class="theme-link" href="#dashboard-guide">"Map Dashboard Guide"</a>
+							</div>
+						  </div>
+						</div>
+						<div class="accordion-item">
+						  <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+							  I have accidentally triggered a mute on an actual Fire! What should I do?
+							</button>
+						  </h2>
+						  <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree">
+							<div class="accordion-body">
+							  <strong>Unmute the marker.</strong> 
+							  You may unmute the marker by clicking the muted marker and press "unmute".
+							</div>
+						  </div>
+						</div>
+					  </div>
+					  <div class="accordion-item">
+						<h2 class="accordion-header" id="panelsStayOpen-headingThree">
+						  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+							I have changed the location of the camera. How can I update it?
+						  </button>
+						</h2>
+						<div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree">
+						  <div class="accordion-body">
+							<strong>Refer to <a class="theme-link" href="#camera-management">"Camera Management Guide"</a></strong> 
+						  </div>
+						</div>
+					  </div>
+					</div>
+				
+		    </div> 
+	    </div>
+    </div><!--//docs-wrapper-->
+	</div>
+
+
+</main>
+                       
+
+            </div>
+        </div>
+		<script src="https://code.jquery.com/jquery-3.5.1.js" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+		<script src="https://cdn.datatables.net/responsive/2.2.9/js/responsive.bootstrap.min.js"></script>
+		
+		<!-- Page Specific JS -->
+		<script src="{{url_for('static', filename='js/smoothscroll.js')}}"></script>
+		<script src="{{url_for('static', filename='js/gumshoe.polyfills.min.js')}}"></script>
+		<script src="{{url_for('static', filename='js/docs.js')}}"></script>
+		<script src="{{url_for('static', filename='js/scripts.js')}}"></script>
+    </body>
+</html>
+
+
+
