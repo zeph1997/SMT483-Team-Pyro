@@ -37,7 +37,7 @@ You may view the code relating to the visual camera as well as the computer visi
 You may view the code relating to the pan tilt platform here - [Go to Pan Tilt Platform Folder](ServoController/README.md)
 
 #### Generate ID
-You may view the code to Generate/Read the cameraID automatically on the Raspberry Pi here - [Go to Generate ID Folder](GenerateID/README.md)
+You may view the code to Generate/Read the cameraID automatically on the Raspberry Pi here - [Go to Generate ID Folder](GenerateID)
 
 ### Software
 The code here is formatted to fit the Flask Web Framework. They all reside in the FlaskDashboard folder. For the frontend, the web pages can be found in the `templates` folder. The javascript can be found in the web pages.
