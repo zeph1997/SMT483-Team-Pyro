@@ -24,26 +24,26 @@ However, the solution is deployed and you may try out the live demo at https://t
 ## Folder Directory
 This is the folder directory for the different components of the project. As this project includes the hardware code, we have separated them into their respective folders. 
 
-### Hardware
-These code reside on the Raspbery Pi as part of the edge computing architecture.
+    ### Hardware
+    These code reside on the Raspbery Pi as part of the edge computing architecture.
 
-#### Thermal Camera
-You may view the code relating to the thermal camera here - [Go to Thermal Camera Folder](ThermalCamera)
+    #### Thermal Camera
+    You may view the code relating to the thermal camera here - [Go to Thermal Camera Folder](ThermalCamera)
 
-#### Visual Camera
-You may view the code relating to the visual camera as well as the computer vision model here - [Go to Visual Camera Folder](CompVision)
+    #### Visual Camera
+    You may view the code relating to the visual camera as well as the computer vision model here - [Go to Visual Camera Folder](CompVision)
 
-#### Pan Tilt Platform
-You may view the code relating to the pan tilt platform here - [Go to Pan Tilt Platform Folder](ServoController)
+    #### Pan Tilt Platform
+    You may view the code relating to the pan tilt platform here - [Go to Pan Tilt Platform Folder](ServoController)
 
-#### Generate ID
-You may view the code to Generate/Read the cameraID automatically on the Raspberry Pi here - [Go to Generate ID Folder](GenerateID)
+    #### Generate ID
+    You may view the code to Generate/Read the cameraID automatically on the Raspberry Pi here - [Go to Generate ID Folder](GenerateID)
 
 ### Software
 The code here is formatted to fit the Flask Web Framework. They all reside in the FlaskDashboard folder. For the frontend, the web pages can be found in the `templates` folder. The javascript can be found in the web pages.
 
-#### Frontend and Backend
-You may view the code to Frontend and Backend code, formatted in the Flask Web Framework directory requirements here - [Go to Flask Dashboard Folder](FlaskDashboard)
+    #### Frontend and Backend
+    You may view the code to Frontend and Backend code, formatted in the Flask Web Framework directory requirements here - [Go to Flask Dashboard Folder](FlaskDashboard)
 
-#### Database
-You may view the Firebase real-time database JSON object here - [Go to Database Folder](Firebase)
+    #### Database
+    You may view the Firebase real-time database JSON object here - [Go to Database Folder](Firebase)
