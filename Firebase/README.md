@@ -1,0 +1,2 @@
+# Database
+As we are using Firebase real-time database, which is a NoSQL database, the database can be stored as a JSON object. We have included the database here, named `Team_Pyro_Database_Final.json`.
